@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { EducationalItem } from '../types';
-import { useAppSelector, useAppDispatch } from '../store/hooks';
+import React from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { toggleFavourite } from '../store/slices/favouritesSlice';
+import { EducationalItem } from '../types';
 
 interface CourseCardProps {
   item: EducationalItem;
