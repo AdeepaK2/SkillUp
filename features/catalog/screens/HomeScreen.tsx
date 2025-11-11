@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
 import { EmptyState } from '../../../components/EmptyState';
@@ -16,7 +17,7 @@ export default function HomeScreen() {
   const { filteredItems, isLoading, selectedFilter } = useAppSelector((state) => state.catalog);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  const loadItems = async () => {
+  const loadItems = React.useCallback(async () => {
     try {
       dispatch(fetchItemsStart());
       const items = await catalogService.fetchItems();
@@ -24,11 +25,11 @@ export default function HomeScreen() {
     } catch (error: any) {
       dispatch(fetchItemsFailure(error.message || 'Failed to fetch items'));
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [loadItems]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,9 +53,9 @@ export default function HomeScreen() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-dark-900">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
       {/* Header */}
-      <View className="bg-white dark:bg-dark-800 px-6 pt-12 pb-4 shadow-sm">
+      <View className="bg-white dark:bg-dark-800 px-6 pt-4 pb-4 shadow-sm">
         <Text className="text-3xl font-bold text-dark-900 dark:text-white mb-1">
           Explore
         </Text>
@@ -86,6 +87,6 @@ export default function HomeScreen() {
           }
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }

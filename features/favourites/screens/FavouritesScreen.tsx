@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CourseCard } from '../../../components/CourseCard';
 import { EmptyState } from '../../../components/EmptyState';
 import { useAppSelector } from '../../../store/hooks';
@@ -21,9 +22,9 @@ export default function FavouritesScreen() {
   };
 
   return (
-    <View className="flex-1 bg-gray-50 dark:bg-dark-900">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
       {/* Header */}
-      <View className="bg-white dark:bg-dark-800 px-6 pt-12 pb-4 shadow-sm">
+      <View className="bg-white dark:bg-dark-800 px-6 pt-4 pb-4 shadow-sm">
         <Text className="text-3xl font-bold text-dark-900 dark:text-white mb-1">
           Favourites
         </Text>
@@ -49,6 +50,6 @@ export default function FavouritesScreen() {
           contentContainerStyle={{ paddingTop: 12, paddingBottom: 20 }}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }

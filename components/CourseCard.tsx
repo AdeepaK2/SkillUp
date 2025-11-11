@@ -56,14 +56,39 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress }) => {
       
       <TouchableOpacity
         onPress={handleFavouritePress}
-        className="absolute top-3 right-3 bg-white dark:bg-dark-700 rounded-full p-2 shadow-lg"
+        style={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          backgroundColor: isFavourite ? '#EC4899' : theme === 'dark' ? '#374151' : '#FFFFFF',
+          paddingHorizontal: 16,
+          paddingVertical: 8,
+          borderRadius: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        }}
       >
         <Feather
-          name="heart"
-          size={20}
-          color={isFavourite ? '#EC4899' : theme === 'dark' ? '#9CA3AF' : '#6B7280'}
-          fill={isFavourite ? '#EC4899' : 'transparent'}
+          name={isFavourite ? 'heart' : 'heart'}
+          size={16}
+          color={isFavourite ? '#FFFFFF' : theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+          fill={isFavourite ? '#FFFFFF' : 'transparent'}
         />
+        <Text
+          style={{
+            marginLeft: 6,
+            fontSize: 13,
+            fontWeight: '600',
+            color: isFavourite ? '#FFFFFF' : theme === 'dark' ? '#9CA3AF' : '#374151',
+          }}
+        >
+          {isFavourite ? 'Saved' : 'Save'}
+        </Text>
       </TouchableOpacity>
 
       <View className="p-4">

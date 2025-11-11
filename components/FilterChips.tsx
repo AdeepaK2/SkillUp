@@ -18,25 +18,31 @@ export const FilterChips: React.FC<FilterChipsProps> = ({ selectedFilter, onFilt
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="px-4 py-3"
-      contentContainerClassName="gap-2"
+      style={{ paddingVertical: 12 }}
+      contentContainerStyle={{ paddingHorizontal: 16, flexDirection: 'row' }}
     >
-      {filters.map((filter) => (
+      {filters.map((filter, index) => (
         <TouchableOpacity
           key={filter.value}
           onPress={() => onFilterChange(filter.value)}
-          className={`px-5 py-2 rounded-full ${
-            selectedFilter === filter.value
-              ? 'bg-primary-600 dark:bg-primary-500'
-              : 'bg-gray-200 dark:bg-dark-700'
-          }`}
+          style={{
+            paddingHorizontal: 24,
+            paddingVertical: 14,
+            borderRadius: 28,
+            backgroundColor: selectedFilter === filter.value ? '#6366F1' : '#E5E7EB',
+            marginRight: index < filters.length - 1 ? 10 : 0,
+            minWidth: 80,
+            height: 48,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <Text
-            className={`font-semibold ${
-              selectedFilter === filter.value
-                ? 'text-white'
-                : 'text-dark-700 dark:text-dark-300'
-            }`}
+            style={{
+              fontWeight: '600',
+              fontSize: 15,
+              color: selectedFilter === filter.value ? '#FFFFFF' : '#374151',
+            }}
           >
             {filter.label}
           </Text>

@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import catalogReducer from './slices/catalogSlice';
+import enrollmentsReducer from './slices/enrollmentsSlice';
 import favouritesReducer from './slices/favouritesSlice';
 import themeReducer from './slices/themeSlice';
 
@@ -10,6 +11,7 @@ export const store = configureStore({
     catalog: catalogReducer,
     favourites: favouritesReducer,
     theme: themeReducer,
+    enrollments: enrollmentsReducer,
   },
 });
 
