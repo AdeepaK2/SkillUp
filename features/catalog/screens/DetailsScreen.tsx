@@ -4,6 +4,7 @@ import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { toggleEnrollment } from '../../../store/slices/enrollmentsSlice';
 import { toggleFavourite } from '../../../store/slices/favouritesSlice';
 import { EducationalItem } from '../../../types';
 
@@ -13,12 +14,22 @@ export default function DetailsScreen() {
   const dispatch = useAppDispatch();
   const theme = useAppSelector((state) => state.theme.mode);
   const favourites = useAppSelector((state) => state.favourites.items);
+  const enrollments = useAppSelector((state) => state.enrollments.items);
 
   const item: EducationalItem = JSON.parse(params.itemData as string);
   const isFavourite = favourites.includes(item.id);
+  const isEnrolled = enrollments.includes(item.id);
 
   const handleFavouritePress = () => {
     dispatch(toggleFavourite(item.id));
+  };
+
+  const handleBookNow = () => {
+    dispatch(toggleEnrollment(item.id));
+    if (!isEnrolled) {
+      // Show success feedback or navigate to My Learning
+      router.push('/(tabs)/learning');
+    }
   };
 
   const getBadgeColor = () => {
@@ -193,8 +204,26 @@ export default function DetailsScreen() {
               <Text className="text-3xl font-bold text-success">FREE</Text>
             )}
           </View>
-          <TouchableOpacity className="bg-primary-600 dark:bg-primary-500 px-8 py-4 rounded-xl">
-            <Text className="text-white font-bold text-lg">Enroll Now</Text>
+          <TouchableOpacity 
+            onPress={handleBookNow}
+            style={{
+              backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 12,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <Feather
+              name={isEnrolled ? 'check-circle' : 'book-open'}
+              size={20}
+              color="#FFFFFF"
+              style={{ marginRight: 8 }}
+            />
+            <Text className="text-white font-bold text-lg">
+              {isEnrolled ? 'Enrolled' : 'Book Now'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
