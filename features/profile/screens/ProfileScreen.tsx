@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { logout } from '../../../store/slices/authSlice';
 import { toggleTheme } from '../../../store/slices/themeSlice';
@@ -27,9 +28,10 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50 dark:bg-dark-900">
-      {/* Header */}
-      <View className="bg-white dark:bg-dark-800 px-6 pt-12 pb-4 shadow-sm mb-6">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
+      <ScrollView className="flex-1">
+        {/* Header */}
+        <View className="bg-white dark:bg-dark-800 px-6 pt-4 pb-4 shadow-sm mb-6">
         <Text className="text-3xl font-bold text-dark-900 dark:text-white mb-1">
           Profile
         </Text>
@@ -186,5 +188,6 @@ export default function ProfileScreen() {
         </Text>
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 }

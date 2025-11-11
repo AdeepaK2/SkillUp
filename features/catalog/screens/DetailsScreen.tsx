@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { toggleFavourite } from '../../../store/slices/favouritesSlice';
 import { EducationalItem } from '../../../types';
@@ -43,7 +44,7 @@ export default function DetailsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-dark-900">
+    <SafeAreaView className="flex-1 bg-white dark:bg-dark-900" edges={['bottom']}>
       <ScrollView>
         {/* Header Image */}
         <View className="relative">
@@ -197,6 +198,6 @@ export default function DetailsScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

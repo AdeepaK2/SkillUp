@@ -49,7 +49,7 @@ function RootLayoutNav() {
     };
 
     restoreAppState();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -61,7 +61,7 @@ function RootLayoutNav() {
     } else if (isAuthenticated && inAuthGroup) {
       router.replace('/(tabs)');
     }
-  }, [isAuthenticated, segments, isReady]);
+  }, [isAuthenticated, segments, isReady, router]);
 
   if (!isReady) {
     return <LoadingSpinner message="Loading SkillUp..." />;

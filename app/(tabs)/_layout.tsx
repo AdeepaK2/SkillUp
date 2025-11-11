@@ -1,10 +1,12 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '../../store/hooks';
 
 export default function TabLayout() {
   const theme = useAppSelector((state) => state.theme.mode);
+  const insets = useSafeAreaInsets();
 
   const activeColor = '#6366F1';
   const inactiveColor = theme === 'dark' ? '#9CA3AF' : '#6B7280';
@@ -18,8 +20,8 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
           borderTopColor: theme === 'dark' ? '#374151' : '#E5E7EB',
-          height: 60,
-          paddingBottom: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
