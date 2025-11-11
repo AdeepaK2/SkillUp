@@ -1,4 +1,5 @@
 import { Feather } from '@expo/vector-icons';
+import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +12,14 @@ export default function ProfileScreen() {
   const { user } = useAppSelector((state) => state.auth);
   const theme = useAppSelector((state) => state.theme.mode);
   const favourites = useAppSelector((state) => state.favourites.items);
+  const enrollments = useAppSelector((state) => state.enrollments.items);
+  const { setColorScheme } = useColorScheme();
+
+  const handleThemeToggle = () => {
+    dispatch(toggleTheme());
+    // Toggle NativeWind color scheme
+    setColorScheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -69,7 +78,7 @@ export default function ProfileScreen() {
             </View>
             <View className="items-center">
               <Text className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                0
+                {enrollments.length}
               </Text>
               <Text className="text-dark-600 dark:text-dark-300 text-sm mt-1">
                 Enrolled
@@ -96,7 +105,7 @@ export default function ProfileScreen() {
         {/* Dark Mode Toggle */}
         <View className="bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-sm">
           <TouchableOpacity
-            onPress={() => dispatch(toggleTheme())}
+            onPress={handleThemeToggle}
             className="flex-row items-center justify-between px-6 py-4"
           >
             <View className="flex-row items-center">

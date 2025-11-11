@@ -40,6 +40,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="learning"
+        options={{
+          title: 'My Learning',
+          tabBarIcon: ({ color, focused }) => (
+            <Feather name="book-open" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="favourites"
         options={{
           title: 'Favourites',
@@ -55,6 +64,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <Feather name="user" size={24} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

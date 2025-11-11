@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import '../global.css';
 import { store } from '../store';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { restoreUser } from '../store/slices/authSlice';
+import { setEnrollments } from '../store/slices/enrollmentsSlice';
 import { restoreFavourites } from '../store/slices/favouritesSlice';
 import { restoreTheme } from '../store/slices/themeSlice';
 
@@ -18,37 +20,49 @@ function RootLayoutNav() {
   const theme = useAppSelector((state) => state.theme.mode);
   const router = useRouter();
   const segments = useSegments();
+  const { setColorScheme } = useColorScheme();
 
   useEffect(() => {
-    const restoreAppState = async () => {
+    // Sync NativeWind color scheme with Redux theme
+    setColorScheme(theme);
+  }, [theme, setColorScheme]);
+
+  useEffect(() => {
+    const restoreState = async () => {
       try {
-        // Restore user
-        const userStr = await AsyncStorage.getItem('user');
+        const [userStr, favouritesStr, themeStr, enrollmentsStr] = await Promise.all([
+          AsyncStorage.getItem('user'),
+          AsyncStorage.getItem('favourites'),
+          AsyncStorage.getItem('theme'),
+          AsyncStorage.getItem('enrollments'),
+        ]);
+
         if (userStr) {
           const user = JSON.parse(userStr);
           dispatch(restoreUser(user));
         }
 
-        // Restore favourites
-        const favouritesStr = await AsyncStorage.getItem('favourites');
         if (favouritesStr) {
           const favourites = JSON.parse(favouritesStr);
           dispatch(restoreFavourites(favourites));
         }
 
-        // Restore theme
-        const savedTheme = await AsyncStorage.getItem('theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          dispatch(restoreTheme(savedTheme));
+        if (themeStr) {
+          dispatch(restoreTheme(themeStr as 'light' | 'dark'));
+        }
+
+        if (enrollmentsStr) {
+          const enrollments = JSON.parse(enrollmentsStr);
+          dispatch(setEnrollments(enrollments));
         }
       } catch (error) {
-        console.error('Error restoring app state:', error);
+        console.error('Failed to restore state:', error);
       } finally {
         setIsReady(true);
       }
     };
 
-    restoreAppState();
+    restoreState();
   }, [dispatch]);
 
   useEffect(() => {

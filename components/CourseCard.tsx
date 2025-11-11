@@ -2,23 +2,32 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { toggleEnrollment } from '../store/slices/enrollmentsSlice';
 import { toggleFavourite } from '../store/slices/favouritesSlice';
 import { EducationalItem } from '../types';
 
 interface CourseCardProps {
   item: EducationalItem;
   onPress: () => void;
+  showEnrollButton?: boolean;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrollButton = false }) => {
   const dispatch = useAppDispatch();
   const favourites = useAppSelector((state) => state.favourites.items);
+  const enrollments = useAppSelector((state) => state.enrollments.items);
   const theme = useAppSelector((state) => state.theme.mode);
   const isFavourite = favourites.includes(item.id);
+  const isEnrolled = enrollments.includes(item.id);
 
   const handleFavouritePress = (e: any) => {
     e.stopPropagation();
     dispatch(toggleFavourite(item.id));
+  };
+
+  const handleEnrollmentPress = (e: any) => {
+    e.stopPropagation();
+    dispatch(toggleEnrollment(item.id));
   };
 
   const getBadgeColor = () => {
@@ -138,6 +147,38 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress }) => {
             <Text className="text-success text-sm font-bold">FREE</Text>
           )}
         </View>
+
+        {showEnrollButton && (
+          <TouchableOpacity
+            onPress={handleEnrollmentPress}
+            style={{
+              backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
+              paddingHorizontal: 20,
+              paddingVertical: 12,
+              borderRadius: 12,
+              marginTop: 12,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Feather
+              name={isEnrolled ? 'check-circle' : 'plus-circle'}
+              size={18}
+              color="#FFFFFF"
+            />
+            <Text
+              style={{
+                marginLeft: 8,
+                fontSize: 15,
+                fontWeight: '700',
+                color: '#FFFFFF',
+              }}
+            >
+              {isEnrolled ? 'Enrolled' : 'Enroll Now'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
