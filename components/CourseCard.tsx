@@ -57,11 +57,14 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
       onPress={onPress}
       className="bg-white dark:bg-dark-800 rounded-2xl shadow-md overflow-hidden mb-4 mx-4"
     >
-      <Image
-        source={{ uri: item.thumbnail }}
-        className="w-full h-48"
-        resizeMode="cover"
-      />
+      <View className="w-full h-48 bg-gray-100 dark:bg-dark-700">
+        <Image
+          source={{ uri: item.thumbnail }}
+          className="w-full h-full"
+          resizeMode="cover"
+          defaultSource={require('../assets/images/icon.png')}
+        />
+      </View>
       
       <TouchableOpacity
         onPress={handleFavouritePress}

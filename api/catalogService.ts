@@ -1,116 +1,216 @@
 import { EducationalItem } from '../types';
 
-// Mock data generator for educational items
-const generateMockItems = (): EducationalItem[] => {
-  const categories = ['Programming', 'Design', 'Business', 'Marketing', 'Data Science'];
-  const instructors = ['John Doe', 'Jane Smith', 'Mike Johnson', 'Sarah Williams', 'David Brown'];
-  const levels: ('beginner' | 'intermediate' | 'advanced')[] = ['beginner', 'intermediate', 'advanced'];
-  const types: ('course' | 'workshop' | 'event')[] = ['course', 'workshop', 'event'];
+// Open Library API Response Types
+interface OpenLibraryBook {
+  key: string;
+  title: string;
+  author_name?: string[];
+  first_publish_year?: number;
+  subject?: string[];
+  cover_i?: number;
+  ratings_average?: number;
+  number_of_pages_median?: number;
+  publisher?: string[];
+  language?: string[];
+}
 
-  // High-quality tech-related images from Unsplash
-  const categoryImages: Record<string, string[]> = {
-    'Programming': [
-      'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400&h=300&fit=crop',
-    ],
-    'Design': [
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=400&h=300&fit=crop',
-    ],
-    'Business': [
-      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=400&h=300&fit=crop',
-    ],
-    'Marketing': [
-      'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1571721795195-a2ca2d3370a9?w=400&h=300&fit=crop',
-    ],
-    'Data Science': [
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1543286386-713bdd548da4?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=400&h=300&fit=crop',
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-    ],
-  };
+interface OpenLibraryResponse {
+  docs: OpenLibraryBook[];
+  numFound: number;
+}
 
-  const items: EducationalItem[] = [];
-
-  // Generate 30 items (10 of each type)
-  for (let i = 0; i < 30; i++) {
-    const type = types[i % 3];
-    const category = categories[i % categories.length];
-    const categoryImageArray = categoryImages[category];
-    const imageIndex = Math.floor(i / categories.length) % categoryImageArray.length;
-    
-    items.push({
-      id: `item-${i + 1}`,
-      title: `${type === 'course' ? 'Complete' : type === 'workshop' ? 'Hands-on' : 'Live'} ${category} ${type.charAt(0).toUpperCase() + type.slice(1)}`,
-      description: `Learn ${category.toLowerCase()} from scratch with this comprehensive ${type}. Master essential skills and techniques through practical examples and real-world projects.`,
-      type,
-      instructor: instructors[i % instructors.length],
-      duration: type === 'course' ? `${Math.floor(Math.random() * 20 + 5)}h` : type === 'workshop' ? '3-5h' : '2h',
-      level: levels[i % levels.length],
-      rating: parseFloat((Math.random() * 2 + 3).toFixed(1)), // 3.0 - 5.0
-      thumbnail: categoryImageArray[imageIndex],
-      price: type === 'event' ? 0 : Math.floor(Math.random() * 150 + 50),
-      category: category,
-      date: type === 'event' ? new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
-      location: type !== 'course' ? ['Online', 'New York', 'San Francisco', 'London'][Math.floor(Math.random() * 4)] : undefined,
-    });
-  }
-
-  return items;
+// Map Open Library subjects to our categories
+const SUBJECT_MAPPING: Record<string, string> = {
+  'programming': 'Programming',
+  'computer science': 'Programming',
+  'javascript': 'Programming',
+  'python': 'Programming',
+  'web development': 'Programming',
+  'design': 'Design',
+  'graphic design': 'Design',
+  'ui design': 'Design',
+  'ux design': 'Design',
+  'business': 'Business',
+  'management': 'Business',
+  'entrepreneurship': 'Business',
+  'marketing': 'Marketing',
+  'digital marketing': 'Marketing',
+  'advertising': 'Marketing',
+  'data science': 'Data Science',
+  'statistics': 'Data Science',
+  'machine learning': 'Data Science',
+  'artificial intelligence': 'Data Science',
 };
 
-// API service for catalog
+// Subjects to fetch from Open Library
+const EDUCATIONAL_SUBJECTS = [
+  'programming',
+  'javascript',
+  'python',
+  'web development',
+  'design',
+  'graphic design',
+  'business',
+  'management',
+  'marketing',
+  'data science',
+  'machine learning',
+];
+
+// Helper function to get category from subjects
+const getCategoryFromSubjects = (subjects?: string[]): string => {
+  if (!subjects || subjects.length === 0) return 'Programming';
+  
+  for (const subject of subjects) {
+    const lowercaseSubject = subject.toLowerCase();
+    for (const [key, value] of Object.entries(SUBJECT_MAPPING)) {
+      if (lowercaseSubject.includes(key)) {
+        return value;
+      }
+    }
+  }
+  
+  return 'Programming'; // Default fallback
+};
+
+// Helper function to get cover image URL
+const getCoverImageUrl = (coverId?: number): string => {
+  if (coverId) {
+    return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
+  }
+  // Fallback image
+  return 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&h=300&fit=crop';
+};
+
+// Helper function to determine item type
+const getItemType = (index: number): 'course' | 'workshop' | 'event' => {
+  const types: ('course' | 'workshop' | 'event')[] = ['course', 'workshop', 'event'];
+  return types[index % 3];
+};
+
+// Helper function to determine level
+const getLevel = (pages?: number): 'beginner' | 'intermediate' | 'advanced' => {
+  if (!pages) return 'beginner';
+  if (pages < 200) return 'beginner';
+  if (pages < 400) return 'intermediate';
+  return 'advanced';
+};
+
+// Helper function to calculate duration
+const getDuration = (pages?: number, type?: 'course' | 'workshop' | 'event'): string => {
+  if (type === 'event') return '2h';
+  if (type === 'workshop') return '3-5h';
+  
+  if (!pages) return '10h';
+  const hours = Math.floor(pages / 20); // Rough estimate: 20 pages per hour
+  return `${Math.max(5, Math.min(hours, 30))}h`;
+};
+
+// Transform Open Library book to EducationalItem
+const transformBookToItem = (book: OpenLibraryBook, index: number): EducationalItem => {
+  const type = getItemType(index);
+  const category = getCategoryFromSubjects(book.subject);
+  const level = getLevel(book.number_of_pages_median);
+  const instructor = book.author_name?.[0] || 'Expert Instructor';
+  
+  return {
+    id: book.key.replace('/works/', ''),
+    title: book.title,
+    description: `Master ${category.toLowerCase()} with this comprehensive ${type}. Learn from industry experts and gain practical skills through hands-on projects and real-world examples.`,
+    type,
+    instructor,
+    duration: getDuration(book.number_of_pages_median, type),
+    level,
+    rating: book.ratings_average ? Math.min(5, Math.max(3, book.ratings_average)) : parseFloat((Math.random() * 1.5 + 3.5).toFixed(1)),
+    thumbnail: getCoverImageUrl(book.cover_i),
+    price: type === 'event' ? 0 : Math.floor(Math.random() * 150 + 50),
+    category,
+    date: type === 'event' ? new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+    location: type !== 'course' ? ['Online', 'New York', 'San Francisco', 'London'][Math.floor(Math.random() * 4)] : undefined,
+  };
+};
+
+// API service for catalog using Open Library
 export const catalogService = {
-  // Fetch all educational items
+  // Fetch educational items from Open Library
   async fetchItems(): Promise<EducationalItem[]> {
     try {
-      // Using mock data instead of Open Library API
-      // In a real app, you would fetch from your backend
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(generateMockItems());
-        }, 1000); // Simulate network delay
-      });
+      const allItems: EducationalItem[] = [];
+      
+      // Fetch books from multiple subjects to get variety
+      const subjectsToFetch = EDUCATIONAL_SUBJECTS.slice(0, 6); // Fetch from 6 subjects
+      
+      for (let i = 0; i < subjectsToFetch.length; i++) {
+        const subject = subjectsToFetch[i];
+        const response = await fetch(
+          `https://openlibrary.org/subjects/${subject}.json?limit=5`
+        );
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.works && data.works.length > 0) {
+          const items = data.works.map((work: any, index: number) => 
+            transformBookToItem({
+              key: work.key,
+              title: work.title,
+              author_name: work.authors?.map((a: any) => a.name) || [],
+              first_publish_year: work.first_publish_year,
+              subject: work.subject || [subject],
+              cover_i: work.cover_id,
+              ratings_average: work.ratings_average,
+              number_of_pages_median: work.number_of_pages_median,
+            }, i + (i * 5))
+          );
+          
+          allItems.push(...items);
+        }
+      }
+      
+      // If we couldn't fetch enough items, add some as fallback
+      if (allItems.length < 10) {
+        console.warn('Limited items from API, some data may be sparse');
+      }
+      
+      return allItems;
     } catch (error) {
-      console.error('Error fetching items:', error);
-      throw error;
+      console.error('Error fetching items from Open Library:', error);
+      // Return empty array instead of throwing to prevent app crash
+      return [];
     }
   },
 
-  // Search items by query
+  // Search items by query using Open Library search API
   async searchItems(query: string): Promise<EducationalItem[]> {
     try {
-      const allItems = await this.fetchItems();
-      return allItems.filter(item =>
-        item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.description.toLowerCase().includes(query.toLowerCase()) ||
-        item.category.toLowerCase().includes(query.toLowerCase())
+      const response = await fetch(
+        `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20`
       );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: OpenLibraryResponse = await response.json();
+      
+      return data.docs.map((book, index) => transformBookToItem(book, index));
     } catch (error) {
       console.error('Error searching items:', error);
-      throw error;
+      return [];
     }
   },
 
-  // Get item by ID
+  // Get item by ID (for backwards compatibility)
   async getItemById(id: string): Promise<EducationalItem | null> {
     try {
       const allItems = await this.fetchItems();
       return allItems.find(item => item.id === id) || null;
     } catch (error) {
       console.error('Error fetching item:', error);
-      throw error;
+      return null;
     }
   },
 };

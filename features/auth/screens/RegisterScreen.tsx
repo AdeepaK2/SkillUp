@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
 import React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as Yup from 'yup';
 import { authService } from '../../../api/authService';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -14,6 +14,10 @@ const RegisterSchema = Yup.object().shape({
     .required('Username is required'),
   email: Yup.string()
     .email('Invalid email address')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      'Please enter a valid email (e.g., user@example.com)'
+    )
     .required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
@@ -46,9 +50,11 @@ export default function RegisterScreen() {
     >
       <ScrollView className="flex-1 px-6">
         <View className="items-center mt-12 mb-8">
-          <View className="bg-primary-100 dark:bg-primary-900 p-4 rounded-full mb-4">
-            <Feather name="user-plus" size={48} color="#6366F1" />
-          </View>
+          <Image 
+            source={require('../../../assets/images/icon.png')}
+            className="w-32 h-32 mb-4"
+            resizeMode="contain"
+          />
           <Text className="text-4xl font-bold text-dark-900 dark:text-white mb-2">
             Create Account
           </Text>
