@@ -145,7 +145,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
 
           {item.price > 0 && (
             <Text className="text-primary-600 dark:text-primary-400 text-lg font-bold">
-              ${item.price}
+              Rs {item.price}
             </Text>
           )}
           {item.price === 0 && (
