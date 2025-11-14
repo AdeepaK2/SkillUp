@@ -5,7 +5,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { LoadingSpinner } from '../components/LoadingSpinner';
 import '../global.css';
 import { store } from '../store';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
