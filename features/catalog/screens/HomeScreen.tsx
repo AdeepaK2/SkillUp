@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
@@ -21,6 +21,8 @@ export default function HomeScreen() {
   const theme = useAppSelector((state) => state.theme.mode);
   
   const [refreshing, setRefreshing] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [selectedCategory, setSelectedCategory] = React.useState('All');
 
   const loadItems = React.useCallback(async () => {
     try {
@@ -52,8 +54,31 @@ export default function HomeScreen() {
   // Get enrolled items
   const enrolledItems = items.filter((item) => enrolledIds.includes(item.id));
   
-  // Get new/explore items (items not enrolled)
-  const exploreItems = items.filter((item) => !enrolledIds.includes(item.id)).slice(0, 10);
+  // Get new/explore items with search and category filter
+  const categories = ['All', 'Programming', 'Design', 'Business', 'Marketing', 'Data Science'];
+  
+  let filteredExploreItems = items.filter((item) => !enrolledIds.includes(item.id));
+  
+  // Apply category filter
+  if (selectedCategory !== 'All') {
+    filteredExploreItems = filteredExploreItems.filter(
+      (item) => item.category === selectedCategory
+    );
+  }
+  
+  // Apply search filter
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    filteredExploreItems = filteredExploreItems.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query) ||
+        item.instructor.toLowerCase().includes(query)
+    );
+  }
+  
+  const exploreItems = filteredExploreItems;
 
   // Calculate stats
   const stats = [
@@ -257,23 +282,118 @@ export default function HomeScreen() {
 
         {/* Explore New Section */}
         <View className="mb-6">
-          <View className="px-6 py-3 flex-row items-center justify-between">
-            <View>
-              <Text className="text-xl font-bold text-dark-900 dark:text-white">
-                Explore New
-              </Text>
-              <Text className="text-sm text-dark-600 dark:text-dark-300">
-                Discover courses, workshops & events
-              </Text>
+          <View className="px-6 py-3">
+            <View className="flex-row items-center justify-between mb-4">
+              <View>
+                <Text className="text-xl font-bold text-dark-900 dark:text-white">
+                  Explore New
+                </Text>
+                <Text className="text-sm text-dark-600 dark:text-dark-300">
+                  {exploreItems.length} courses available
+                </Text>
+              </View>
             </View>
+
+            {/* Search Bar */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
+                borderRadius: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                marginBottom: 16,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 8,
+                elevation: 3,
+              }}
+            >
+              <Feather
+                name="search"
+                size={20}
+                color={theme === 'dark' ? '#94A3B8' : '#64748B'}
+              />
+              <TextInput
+                placeholder="Search courses, instructors..."
+                placeholderTextColor={theme === 'dark' ? '#64748B' : '#94A3B8'}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                style={{
+                  flex: 1,
+                  marginLeft: 12,
+                  fontSize: 15,
+                  color: theme === 'dark' ? '#FFFFFF' : '#1E293B',
+                }}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                  <Feather
+                    name="x-circle"
+                    size={20}
+                    color={theme === 'dark' ? '#64748B' : '#94A3B8'}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Category Filter Pills */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 8 }}
+            >
+              {categories.map((category) => (
+                <TouchableOpacity
+                  key={category}
+                  onPress={() => setSelectedCategory(category)}
+                  style={{
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 20,
+                    marginRight: 8,
+                    backgroundColor:
+                      selectedCategory === category
+                        ? '#6366F1'
+                        : theme === 'dark'
+                        ? '#1E293B'
+                        : '#F1F5F9',
+                    borderWidth: 1,
+                    borderColor:
+                      selectedCategory === category
+                        ? '#6366F1'
+                        : theme === 'dark'
+                        ? '#334155'
+                        : '#E2E8F0',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '600',
+                      color:
+                        selectedCategory === category
+                          ? '#FFFFFF'
+                          : theme === 'dark'
+                          ? '#CBD5E1'
+                          : '#475569',
+                    }}
+                  >
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
           
           {exploreItems.length === 0 ? (
-            <View className="px-6">
+            <View className="px-6 mt-4">
               <EmptyState
-                icon="inbox"
-                title="No items found"
-                message="Refresh to see new content"
+                icon="search"
+                title={searchQuery ? "No results found" : "No items found"}
+                message={searchQuery ? `Try different keywords` : "Refresh to see new content"}
               />
             </View>
           ) : (
