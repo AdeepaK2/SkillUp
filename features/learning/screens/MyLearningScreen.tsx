@@ -6,10 +6,10 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
+    FlatList,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -52,7 +52,7 @@ export default function MyLearningScreen() {
     <SafeAreaView edges={['top']} className="flex-1 bg-gray-50 dark:bg-dark-900">
       <View className="flex-1">
         {/* Header */}
-        <View className="px-4 pt-4 pb-2">
+        <View className="px-5 pt-4 pb-2">
           <Text className="text-3xl font-bold text-gray-900 dark:text-white">
             My Learning
           </Text>
@@ -62,19 +62,22 @@ export default function MyLearningScreen() {
         </View>
 
         {/* Filter Tabs */}
-        <View className="px-4 py-3">
-          <View className="flex-row">
+        <View className="px-5 py-3">
+          <View className="flex-row flex-wrap">
             {filters.map((filter) => (
               <TouchableOpacity
                 key={filter.id}
+                activeOpacity={0.7}
                 onPress={() => setSelectedFilter(filter.id)}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   paddingHorizontal: 16,
-                  paddingVertical: 8,
+                  paddingVertical: 10,
+                  minHeight: 44,
                   marginRight: 8,
-                  borderRadius: 20,
+                  marginBottom: 8,
+                  borderRadius: 22,
                   backgroundColor:
                     selectedFilter === filter.id
                       ? '#3B82F6'

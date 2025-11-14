@@ -80,7 +80,7 @@ export default function ExploreScreen() {
     <SafeAreaView edges={['top']} className="flex-1 bg-gray-50 dark:bg-dark-900">
       <View className="flex-1">
         {/* Header */}
-        <View className="px-4 pt-4 pb-2">
+        <View className="px-5 pt-4 pb-2">
           <Text className="text-3xl font-bold text-gray-900 dark:text-white">
             Explore
           </Text>

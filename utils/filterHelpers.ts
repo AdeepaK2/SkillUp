@@ -1,6 +1,5 @@
 /**
  * Filter and search utility functions
- * Following best practices: Pure functions, single responsibility
  */
 
 import { EducationalItem } from '../types';

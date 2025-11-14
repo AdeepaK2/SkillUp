@@ -24,7 +24,7 @@ export default function FavouritesScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
       {/* Header */}
-      <View className="bg-white dark:bg-dark-800 px-6 pt-4 pb-4 shadow-sm">
+      <View className="bg-white dark:bg-dark-800 px-5 pt-4 pb-4 shadow-sm">
         <Text className="text-3xl font-bold text-dark-900 dark:text-white mb-1">
           Favourites
         </Text>

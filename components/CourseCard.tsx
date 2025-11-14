@@ -67,6 +67,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
       </View>
       
       <TouchableOpacity
+        activeOpacity={0.8}
         onPress={handleFavouritePress}
         style={{
           position: 'absolute',
@@ -74,8 +75,9 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
           right: 12,
           backgroundColor: isFavourite ? '#EC4899' : theme === 'dark' ? '#374151' : '#FFFFFF',
           paddingHorizontal: 16,
-          paddingVertical: 8,
-          borderRadius: 20,
+          paddingVertical: 10,
+          minHeight: 44,
+          borderRadius: 22,
           flexDirection: 'row',
           alignItems: 'center',
           shadowColor: '#000',
@@ -153,11 +155,13 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
 
         {showEnrollButton && (
           <TouchableOpacity
+            activeOpacity={0.8}
             onPress={handleEnrollmentPress}
             style={{
               backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
               paddingHorizontal: 20,
-              paddingVertical: 12,
+              paddingVertical: 14,
+              minHeight: 48,
               borderRadius: 12,
               marginTop: 12,
               flexDirection: 'row',

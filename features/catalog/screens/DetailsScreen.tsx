@@ -206,14 +206,18 @@ export default function DetailsScreen() {
             )}
           </View>
           <TouchableOpacity 
+            activeOpacity={0.8}
             onPress={handleBookNow}
             style={{
               backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
               paddingHorizontal: 32,
               paddingVertical: 16,
+              minHeight: 56,
+              minWidth: 160,
               borderRadius: 12,
               flexDirection: 'row',
               alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <Feather

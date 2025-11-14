@@ -1,6 +1,5 @@
 /**
  * Data formatting utility functions
- * Following best practices: Centralized formatting logic
  */
 
 /**

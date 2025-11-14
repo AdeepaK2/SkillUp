@@ -38,9 +38,13 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
-      <ScrollView className="flex-1">
+      <ScrollView 
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
         {/* Header */}
-        <View className="bg-white dark:bg-dark-800 px-6 pt-4 pb-4 shadow-sm mb-6">
+        <View className="bg-white dark:bg-dark-800 px-5 pt-4 pb-4 shadow-sm mb-6">
         <Text className="text-3xl font-bold text-dark-900 dark:text-white mb-1">
           Profile
         </Text>
@@ -105,8 +109,10 @@ export default function ProfileScreen() {
         {/* Dark Mode Toggle */}
         <View className="bg-white dark:bg-dark-800 rounded-2xl overflow-hidden shadow-sm">
           <TouchableOpacity
+            activeOpacity={0.7}
             onPress={handleThemeToggle}
             className="flex-row items-center justify-between px-6 py-4"
+            style={{ minHeight: 72 }}
           >
             <View className="flex-row items-center">
               <View className="bg-primary-100 dark:bg-primary-900 p-2 rounded-lg mr-4">
@@ -163,7 +169,11 @@ export default function ProfileScreen() {
             <Feather name="chevron-right" size={20} color={theme === 'dark' ? '#9CA3AF' : '#6B7280'} />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between px-6 py-4">
+          <TouchableOpacity 
+            activeOpacity={0.7}
+            className="flex-row items-center justify-between px-6 py-4"
+            style={{ minHeight: 68 }}
+          >
             <View className="flex-row items-center">
               <View className="bg-gray-100 dark:bg-dark-700 p-2 rounded-lg mr-4">
                 <Feather name="help-circle" size={24} color={theme === 'dark' ? '#9CA3AF' : '#6B7280'} />
@@ -180,8 +190,10 @@ export default function ProfileScreen() {
       {/* Logout Button */}
       <View className="mx-4 mb-8">
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={handleLogout}
           className="bg-error/10 border border-error rounded-2xl px-6 py-4 flex-row items-center justify-center"
+          style={{ minHeight: 56 }}
         >
           <Feather name="log-out" size={20} color="#EF4444" />
           <Text className="text-error font-bold text-base ml-2">
