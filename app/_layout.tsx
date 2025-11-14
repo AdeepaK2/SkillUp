@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
@@ -12,6 +13,9 @@ import { restoreUser } from '../store/slices/authSlice';
 import { setEnrollments } from '../store/slices/enrollmentsSlice';
 import { restoreFavourites } from '../store/slices/favouritesSlice';
 import { restoreTheme } from '../store/slices/themeSlice';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const [isReady, setIsReady] = useState(false);
@@ -55,10 +59,15 @@ function RootLayoutNav() {
           const enrollments = JSON.parse(enrollmentsStr);
           dispatch(setEnrollments(enrollments));
         }
+
+        // Add a minimum delay to show splash screen
+        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.error('Failed to restore state:', error);
       } finally {
         setIsReady(true);
+        // Hide splash screen after state is restored
+        await SplashScreen.hideAsync();
       }
     };
 
@@ -78,7 +87,7 @@ function RootLayoutNav() {
   }, [isAuthenticated, segments, isReady, router]);
 
   if (!isReady) {
-    return <LoadingSpinner message="Loading SkillUp..." />;
+    return null; // Return null while splash screen is showing
   }
 
   return (

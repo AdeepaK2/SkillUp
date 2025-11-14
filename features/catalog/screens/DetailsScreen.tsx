@@ -58,11 +58,12 @@ export default function DetailsScreen() {
     <SafeAreaView className="flex-1 bg-white dark:bg-dark-900" edges={['bottom']}>
       <ScrollView>
         {/* Header Image */}
-        <View className="relative">
+        <View className="relative w-full h-72 bg-gray-100 dark:bg-dark-700">
           <Image
             source={{ uri: item.thumbnail }}
-            className="w-full h-72"
+            className="w-full h-full"
             resizeMode="cover"
+            defaultSource={require('../../../assets/images/icon.png')}
           />
           
           {/* Back Button */}
