@@ -198,7 +198,7 @@ export default function DetailsScreen() {
               <>
                 <Text className="text-dark-600 dark:text-dark-300 text-sm">Price</Text>
                 <Text className="text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  ${item.price}
+                  Rs {item.price}
                 </Text>
               </>
             ) : (
