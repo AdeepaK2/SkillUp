@@ -1,6 +1,5 @@
 /**
  * Validation utility functions
- * Following best practices: Reusable validation logic
  */
 
 import { VALIDATION_RULES } from './constants';

@@ -112,12 +112,14 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-dark-900" edges={['top']}>
       <ScrollView
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />
         }
+        contentContainerStyle={{ paddingBottom: 20 }}
       >
         {/* Welcome Card */}
-        <View className="px-6 pt-6 pb-3">
+        <View className="px-5 pt-4 pb-3">
           <View 
             style={{
               backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
@@ -192,19 +194,20 @@ export default function HomeScreen() {
         </View>
 
         {/* Stats Section */}
-        <View className="px-6 py-3">
-          <View className="flex-row justify-between">
+        <View className="px-5 py-3">
+          <View className="flex-row justify-between gap-2">
             {stats.map((stat, index) => (
               <TouchableOpacity
                 key={index}
                 activeOpacity={0.7}
                 style={{
                   flex: 1,
-                  marginHorizontal: 4,
+                  minHeight: 110,
                   padding: 16,
                   borderRadius: 16,
                   backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.08,
@@ -281,8 +284,8 @@ export default function HomeScreen() {
         )}
 
         {/* Explore New Section */}
-        <View className="mb-6">
-          <View className="px-6 py-3">
+        <View className="mb-4">
+          <View className="px-5 py-3">
             <View className="flex-row items-center justify-between mb-4">
               <View>
                 <Text className="text-xl font-bold text-dark-900 dark:text-white">
@@ -302,7 +305,8 @@ export default function HomeScreen() {
                 backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
                 borderRadius: 16,
                 paddingHorizontal: 16,
-                paddingVertical: 12,
+                paddingVertical: 14,
+                minHeight: 52,
                 marginBottom: 16,
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 2 },
@@ -348,11 +352,14 @@ export default function HomeScreen() {
               {categories.map((category) => (
                 <TouchableOpacity
                   key={category}
+                  activeOpacity={0.7}
                   onPress={() => setSelectedCategory(category)}
                   style={{
                     paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    borderRadius: 20,
+                    paddingVertical: 12,
+                    minHeight: 44,
+                    justifyContent: 'center',
+                    borderRadius: 22,
                     marginRight: 8,
                     backgroundColor:
                       selectedCategory === category
@@ -389,7 +396,7 @@ export default function HomeScreen() {
           </View>
           
           {exploreItems.length === 0 ? (
-            <View className="px-6 mt-4">
+            <View className="px-5 mt-8">
               <EmptyState
                 icon="search"
                 title={searchQuery ? "No results found" : "No items found"}
