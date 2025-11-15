@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { toggleEnrollment } from '../store/slices/enrollmentsSlice';
 import { toggleFavourite } from '../store/slices/favouritesSlice';
@@ -12,23 +12,26 @@ interface CourseCardProps {
   showEnrollButton?: boolean;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrollButton = false }) => {
+export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress, showEnrollButton = false }) => {
   const dispatch = useAppDispatch();
   const favourites = useAppSelector((state) => state.favourites.items);
   const enrollments = useAppSelector((state) => state.enrollments.items);
   const theme = useAppSelector((state) => state.theme.mode);
   const isFavourite = favourites.includes(item.id);
   const isEnrolled = enrollments.includes(item.id);
+  
+  const [imageLoading, setImageLoading] = React.useState(true);
+  const [imageError, setImageError] = React.useState(false);
 
-  const handleFavouritePress = (e: any) => {
+  const handleFavouritePress = React.useCallback((e: any) => {
     e.stopPropagation();
     dispatch(toggleFavourite(item.id));
-  };
+  }, [dispatch, item.id]);
 
-  const handleEnrollmentPress = (e: any) => {
+  const handleEnrollmentPress = React.useCallback((e: any) => {
     e.stopPropagation();
     dispatch(toggleEnrollment(item.id));
-  };
+  }, [dispatch, item.id]);
 
   const getBadgeColor = () => {
     switch (item.type) {
@@ -58,12 +61,49 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
       className="bg-white dark:bg-dark-800 rounded-2xl shadow-md overflow-hidden mb-4 mx-4"
     >
       <View className="w-full h-48 bg-gray-100 dark:bg-dark-700">
-        <Image
-          source={{ uri: item.thumbnail }}
-          className="w-full h-full"
-          resizeMode="cover"
-          defaultSource={require('../assets/images/icon.png')}
-        />
+        {!imageError ? (
+          <>
+            <Image
+              source={{ uri: item.thumbnail }}
+              className="w-full h-full"
+              resizeMode="cover"
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
+              onError={() => {
+                setImageError(true);
+                setImageLoading(false);
+              }}
+            />
+            {imageLoading && (
+              <View 
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: theme === 'dark' ? '#1F2937' : '#F3F4F6',
+                }}
+              >
+                <ActivityIndicator size="small" color="#6366F1" />
+              </View>
+            )}
+          </>
+        ) : (
+          <View 
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: theme === 'dark' ? '#1F2937' : '#F3F4F6',
+            }}
+          >
+            <Feather name="image" size={48} color={theme === 'dark' ? '#4B5563' : '#9CA3AF'} />
+          </View>
+        )}
       </View>
       
       <TouchableOpacity
@@ -189,4 +229,4 @@ export const CourseCard: React.FC<CourseCardProps> = ({ item, onPress, showEnrol
       </View>
     </TouchableOpacity>
   );
-};
+});
