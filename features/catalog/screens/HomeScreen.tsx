@@ -1,12 +1,13 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { FlatList, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
 import { EmptyState } from '../../../components/EmptyState';
 import { LoadingSpinner } from '../../../components/LoadingSpinner';
+import { useDebounce } from '../../../hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchItemsFailure, fetchItemsStart, fetchItemsSuccess } from '../../../store/slices/catalogSlice';
 import { EducationalItem } from '../../../types';
@@ -14,7 +15,7 @@ import { EducationalItem } from '../../../types';
 export default function HomeScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { items, isLoading } = useAppSelector((state) => state.catalog);
+  const { items, isLoading, lastFetched } = useAppSelector((state) => state.catalog);
   const user = useAppSelector((state) => state.auth.user);
   const enrolledIds = useAppSelector((state) => state.enrollments.items);
   const favouriteIds = useAppSelector((state) => state.favourites.items);
@@ -23,8 +24,11 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('All');
+  
+  // Debounce search query to reduce filtering operations
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const loadItems = React.useCallback(async () => {
+  const loadItems = useCallback(async (forceRefresh = false) => {
     try {
       dispatch(fetchItemsStart());
       const items = await catalogService.fetchItems();
@@ -35,75 +39,91 @@ export default function HomeScreen() {
   }, [dispatch]);
 
   useEffect(() => {
-    loadItems();
+    // Only fetch if no items in cache or cache is stale (older than 5 minutes)
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    const isCacheStale = !lastFetched || Date.now() - lastFetched > CACHE_DURATION;
+    
+    if (items.length === 0 || isCacheStale) {
+      loadItems();
+    }
+  }, []); // Empty dependency array - only run on mount
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadItems(true); // Force refresh
+    setRefreshing(false);
   }, [loadItems]);
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadItems();
-    setRefreshing(false);
-  };
-
-  const handleCardPress = (item: EducationalItem) => {
+  const handleCardPress = useCallback((item: EducationalItem) => {
     router.push({
       pathname: '/details',
       params: { itemData: JSON.stringify(item) },
     });
-  };
+  }, [router]);
 
-  // Get enrolled items
-  const enrolledItems = items.filter((item) => enrolledIds.includes(item.id));
-  
-  // Get new/explore items with search and category filter
-  const categories = ['All', 'Programming', 'Design', 'Business', 'Marketing', 'Data Science'];
-  
-  let filteredExploreItems = items.filter((item) => !enrolledIds.includes(item.id));
-  
-  // Apply category filter
-  if (selectedCategory !== 'All') {
-    filteredExploreItems = filteredExploreItems.filter(
-      (item) => item.category === selectedCategory
-    );
-  }
-  
-  // Apply search filter
-  if (searchQuery.trim()) {
-    const query = searchQuery.toLowerCase();
-    filteredExploreItems = filteredExploreItems.filter(
-      (item) =>
-        item.title.toLowerCase().includes(query) ||
-        item.description.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query) ||
-        item.instructor.toLowerCase().includes(query)
-    );
-  }
-  
-  const exploreItems = filteredExploreItems;
+  // Memoize categories array
+  const categories = useMemo(
+    () => ['All', 'Programming', 'Design', 'Business', 'Marketing', 'Data Science'],
+    []
+  );
 
-  // Calculate stats
-  const stats = [
-    {
-      icon: 'book-open',
-      label: 'Enrolled',
-      value: enrolledIds.length,
-      color: '#6366F1',
-      bgColor: theme === 'dark' ? '#312E81' : '#EEF2FF',
-    },
-    {
-      icon: 'heart',
-      label: 'Favourites',
-      value: favouriteIds.length,
-      color: '#EC4899',
-      bgColor: theme === 'dark' ? '#831843' : '#FCE7F3',
-    },
-    {
-      icon: 'award',
-      label: 'Completed',
-      value: 0,
-      color: '#10B981',
-      bgColor: theme === 'dark' ? '#064E3B' : '#D1FAE5',
-    },
-  ];
+  // Memoize enrolled items
+  const enrolledItems = useMemo(
+    () => items.filter((item) => enrolledIds.includes(item.id)),
+    [items, enrolledIds]
+  );
+  
+  // Memoize filtered explore items with search and category filter
+  const exploreItems = useMemo(() => {
+    let filtered = items.filter((item) => !enrolledIds.includes(item.id));
+    
+    // Apply category filter
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter((item) => item.category === selectedCategory);
+    }
+    
+    // Apply search filter using debounced query
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          item.description.toLowerCase().includes(query) ||
+          item.category.toLowerCase().includes(query) ||
+          item.instructor.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [items, enrolledIds, selectedCategory, debouncedSearchQuery]);
+
+  // Memoize stats calculation
+  const stats = useMemo(
+    () => [
+      {
+        icon: 'book-open',
+        label: 'Enrolled',
+        value: enrolledIds.length,
+        color: '#6366F1',
+        bgColor: theme === 'dark' ? '#312E81' : '#EEF2FF',
+      },
+      {
+        icon: 'heart',
+        label: 'Favourites',
+        value: favouriteIds.length,
+        color: '#EC4899',
+        bgColor: theme === 'dark' ? '#831843' : '#FCE7F3',
+      },
+      {
+        icon: 'award',
+        label: 'Completed',
+        value: 0,
+        color: '#10B981',
+        bgColor: theme === 'dark' ? '#064E3B' : '#D1FAE5',
+      },
+    ],
+    [enrolledIds.length, favouriteIds.length, theme]
+  );
 
   if (isLoading && !refreshing) {
     return <LoadingSpinner message="Loading educational content..." />;
@@ -404,16 +424,22 @@ export default function HomeScreen() {
               />
             </View>
           ) : (
-            <View>
-              {exploreItems.map((item) => (
+            <FlatList
+              data={exploreItems}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
                 <CourseCard
-                  key={item.id}
                   item={item}
                   onPress={() => handleCardPress(item)}
                   showEnrollButton={false}
                 />
-              ))}
-            </View>
+              )}
+              initialNumToRender={5}
+              maxToRenderPerBatch={5}
+              windowSize={5}
+              removeClippedSubviews={true}
+              scrollEnabled={false}
+            />
           )}
         </View>
       </ScrollView>

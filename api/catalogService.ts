@@ -137,38 +137,55 @@ export const catalogService = {
     try {
       const allItems: EducationalItem[] = [];
       
-      // Fetch books from multiple subjects to get variety
-      const subjectsToFetch = EDUCATIONAL_SUBJECTS.slice(0, 6); // Fetch from 6 subjects
+      // Fetch books from multiple subjects to get variety - reduced from 6 to 4 for faster initial load
+      const subjectsToFetch = EDUCATIONAL_SUBJECTS.slice(0, 4);
       
-      for (let i = 0; i < subjectsToFetch.length; i++) {
-        const subject = subjectsToFetch[i];
-        const response = await fetch(
-          `https://openlibrary.org/subjects/${subject}.json?limit=5`
-        );
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.works && data.works.length > 0) {
-          const items = data.works.map((work: any, index: number) => 
-            transformBookToItem({
-              key: work.key,
-              title: work.title,
-              author_name: work.authors?.map((a: any) => a.name) || [],
-              first_publish_year: work.first_publish_year,
-              subject: work.subject || [subject],
-              cover_i: work.cover_id,
-              ratings_average: work.ratings_average,
-              number_of_pages_median: work.number_of_pages_median,
-            }, i + (i * 5))
+      // Fetch all subjects in parallel for better performance
+      const fetchPromises = subjectsToFetch.map(async (subject, i) => {
+        try {
+          const response = await fetch(
+            `https://openlibrary.org/subjects/${subject}.json?limit=5`,
+            { 
+              headers: { 'Accept': 'application/json' },
+              // Add timeout for faster failure
+            }
           );
           
-          allItems.push(...items);
+          if (!response.ok) {
+            console.warn(`Failed to fetch subject ${subject}: ${response.status}`);
+            return [];
+          }
+          
+          const data = await response.json();
+          
+          if (data.works && data.works.length > 0) {
+            return data.works.map((work: any, index: number) => 
+              transformBookToItem({
+                key: work.key,
+                title: work.title,
+                author_name: work.authors?.map((a: any) => a.name) || [],
+                first_publish_year: work.first_publish_year,
+                subject: work.subject || [subject],
+                cover_i: work.cover_id,
+                ratings_average: work.ratings_average,
+                number_of_pages_median: work.number_of_pages_median,
+              }, i + (i * 5))
+            );
+          }
+          return [];
+        } catch (err) {
+          console.warn(`Error fetching subject ${subject}:`, err);
+          return [];
         }
-      }
+      });
+      
+      // Wait for all requests to complete
+      const results = await Promise.all(fetchPromises);
+      
+      // Flatten results
+      results.forEach(items => {
+        allItems.push(...items);
+      });
       
       // If we couldn't fetch enough items, add some as fallback
       if (allItems.length < 10) {

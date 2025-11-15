@@ -36,6 +36,7 @@ export interface CatalogState {
   isLoading: boolean;
   error: string | null;
   selectedFilter: 'all' | 'course' | 'workshop' | 'event';
+  lastFetched: number | null; // Timestamp of last successful fetch
 }
 
 // Favourites

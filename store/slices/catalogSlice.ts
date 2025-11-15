@@ -7,6 +7,7 @@ const initialState: CatalogState = {
   isLoading: false,
   error: null,
   selectedFilter: 'all',
+  lastFetched: null, // Timestamp of last successful fetch
 };
 
 const catalogSlice = createSlice({
@@ -22,6 +23,7 @@ const catalogSlice = createSlice({
       state.items = action.payload;
       state.filteredItems = action.payload;
       state.error = null;
+      state.lastFetched = Date.now(); // Store timestamp
     },
     fetchItemsFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
