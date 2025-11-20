@@ -46,6 +46,12 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Build APK
+        run: |
+          npx expo prebuild --platform android --clean
+          cd android
+          chmod +x ./gradlew
+
       - name: Decode Keystore
         run: |
           echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 -d > android/app/release.keystore
@@ -57,11 +63,9 @@ jobs:
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/keystore.properties
           echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/keystore.properties
 
-      - name: Build APK
+      - name: Build Release APK
         run: |
-          npx expo prebuild --platform android --clean
           cd android
-          chmod +x ./gradlew
           ./gradlew assembleRelease --no-daemon
 
       - name: Rename APK
