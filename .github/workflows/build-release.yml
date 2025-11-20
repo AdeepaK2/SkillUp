@@ -42,7 +42,9 @@ jobs:
 
       - name: Get version from package.json
         id: package-version
-        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build APK
         run: |
