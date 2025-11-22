@@ -1,4 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EducationalItem } from '../types';
+
+// Cache configuration
+const CACHE_KEY = 'catalog_items_cache';
+const CACHE_TIMESTAMP_KEY = 'catalog_cache_timestamp';
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
 
 // Open Library API Response Types
 interface OpenLibraryBook {
@@ -133,8 +139,24 @@ const transformBookToItem = (book: OpenLibraryBook, index: number): EducationalI
 // API service for catalog using Open Library
 export const catalogService = {
   // Fetch educational items from Open Library
-  async fetchItems(): Promise<EducationalItem[]> {
+  async fetchItems(useCache = true): Promise<EducationalItem[]> {
     try {
+      // Check cache first
+      if (useCache) {
+        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        const cacheTimestamp = await AsyncStorage.getItem(CACHE_TIMESTAMP_KEY);
+        
+        if (cachedData && cacheTimestamp) {
+          const timestamp = parseInt(cacheTimestamp, 10);
+          const isCacheValid = Date.now() - timestamp < CACHE_DURATION;
+          
+          if (isCacheValid) {
+            console.log('Using cached catalog data');
+            return JSON.parse(cachedData);
+          }
+        }
+      }
+
       const allItems: EducationalItem[] = [];
       
       // Fetch books from multiple subjects to get variety - reduced from 6 to 4 for faster initial load
@@ -192,12 +214,38 @@ export const catalogService = {
         console.warn('Limited items from API, some data may be sparse');
       }
       
+      // Cache the results
+      if (allItems.length > 0) {
+        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(allItems));
+        await AsyncStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+        console.log('Cached catalog data');
+      }
+      
       return allItems;
     } catch (error) {
       console.error('Error fetching items from Open Library:', error);
+      
+      // Try to return cached data even if expired, better than nothing
+      try {
+        const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+          console.log('Using expired cache as fallback');
+          return JSON.parse(cachedData);
+        }
+      } catch (cacheError) {
+        console.error('Error reading cache:', cacheError);
+      }
+      
       // Return empty array instead of throwing to prevent app crash
       return [];
     }
+  },
+
+  // Clear cache (useful for debugging or manual refresh)
+  async clearCache(): Promise<void> {
+    await AsyncStorage.removeItem(CACHE_KEY);
+    await AsyncStorage.removeItem(CACHE_TIMESTAMP_KEY);
+    console.log('Cache cleared');
   },
 
   // Search items by query using Open Library search API

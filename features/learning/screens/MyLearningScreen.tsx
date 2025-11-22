@@ -41,7 +41,7 @@ export default function MyLearningScreen() {
     <CourseCard
       item={item}
       onPress={() => router.push({
-        pathname: '/course-content',
+        pathname: '/details',
         params: { itemData: JSON.stringify(item) },
       })}
       showEnrollButton={false}
