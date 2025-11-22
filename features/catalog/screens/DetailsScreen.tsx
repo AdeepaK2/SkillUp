@@ -289,9 +289,10 @@ export default function DetailsScreen() {
               />
               <Text className="text-white font-bold text-lg">
                 Join Now
-            </Text>
-          </TouchableOpacity>
-        </View>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

@@ -21,6 +21,9 @@ export default function HomeScreen() {
   const enrolledIds = useAppSelector((state) => state.enrollments.items);
   const favouriteIds = useAppSelector((state) => state.favourites.items);
   const theme = useAppSelector((state) => state.theme.mode);
+  const unreadNotifications = useAppSelector((state) => 
+    state.notifications.items.filter(n => !n.read).length
+  );
   
   const [refreshing, setRefreshing] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -276,6 +279,7 @@ export default function HomeScreen() {
 
               {/* Notification Icon */}
               <TouchableOpacity
+                onPress={() => router.push('/notifications')}
                 style={{
                   width: 40,
                   height: 40,
@@ -283,6 +287,7 @@ export default function HomeScreen() {
                   backgroundColor: theme === 'dark' ? '#334155' : '#F1F5F9',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  position: 'relative',
                 }}
               >
                 <Feather 
@@ -290,6 +295,34 @@ export default function HomeScreen() {
                   size={20} 
                   color={theme === 'dark' ? '#94A3B8' : '#64748B'} 
                 />
+                {/* Notification Badge */}
+                {unreadNotifications > 0 && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 4,
+                      right: 4,
+                      width: 18,
+                      height: 18,
+                      borderRadius: 9,
+                      backgroundColor: '#EF4444',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderWidth: 2,
+                      borderColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        color: '#FFFFFF',
+                      }}
+                    >
+                      {unreadNotifications}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           </View>
