@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, FlatList, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
@@ -26,8 +26,25 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   
+  // Animation for theme toggle
+  const rotateAnim = React.useRef(new Animated.Value(0)).current;
+  
   // Debounce search query to reduce filtering operations
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  const handleThemeToggle = useCallback(() => {
+    // Animate rotation
+    Animated.timing(rotateAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      rotateAnim.setValue(0);
+    });
+    
+    // Toggle theme immediately
+    dispatch(toggleTheme());
+  }, [dispatch, rotateAnim]);
 
   const loadItems = useCallback(async (forceRefresh = false) => {
     try {
@@ -112,8 +129,8 @@ export default function HomeScreen() {
         icon: 'heart',
         label: 'Favourites',
         value: favouriteIds.length,
-        color: '#0B3D5C',
-        bgColor: theme === 'dark' ? '#831843' : '#FCE7F3',
+        color: '#17B5A3',
+        bgColor: theme === 'dark' ? '#094941' : '#E6F7F5',
       },
       {
         icon: 'award',
@@ -161,7 +178,7 @@ export default function HomeScreen() {
             
             {/* Dark Mode Toggle */}
             <TouchableOpacity
-              onPress={() => dispatch(toggleTheme())}
+              onPress={handleThemeToggle}
               style={{
                 width: 44,
                 height: 44,
@@ -171,11 +188,22 @@ export default function HomeScreen() {
                 justifyContent: 'center',
               }}
             >
-              <Feather
-                name={theme === 'dark' ? 'sun' : 'moon'}
-                size={20}
-                color={theme === 'dark' ? '#17B5A3' : '#0B3D5C'}
-              />
+              <Animated.View
+                style={{
+                  transform: [{
+                    rotate: rotateAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0deg', '360deg'],
+                    }),
+                  }],
+                }}
+              >
+                <Feather
+                  name={theme === 'dark' ? 'sun' : 'moon'}
+                  size={20}
+                  color={theme === 'dark' ? '#17B5A3' : '#0B3D5C'}
+                />
+              </Animated.View>
             </TouchableOpacity>
           </View>
         </View>
