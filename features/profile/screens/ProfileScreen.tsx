@@ -57,10 +57,12 @@ export default function ProfileScreen() {
       <View className="mx-4 mb-6">
         <View className="bg-white dark:bg-dark-800 rounded-2xl p-6 shadow-sm">
           <View className="items-center mb-6">
-            <View className="bg-primary-100 dark:bg-primary-900 w-24 h-24 rounded-full items-center justify-center mb-4">
-              <Text className="text-primary-600 dark:text-primary-400 text-4xl font-bold">
-                {user?.username?.charAt(0).toUpperCase() || 'U'}
-              </Text>
+            <View className="bg-primary-600 dark:bg-primary-700 w-24 h-24 rounded-full items-center justify-center mb-4">
+              <Feather
+                name="user"
+                size={48}
+                color="#FFFFFF"
+              />
             </View>
             <Text className="text-2xl font-bold text-dark-900 dark:text-white mb-1">
               {user?.username || 'User'}

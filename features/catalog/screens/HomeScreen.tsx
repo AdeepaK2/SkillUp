@@ -244,9 +244,11 @@ export default function HomeScreen() {
                     justifyContent: 'center',
                   }}
                 >
-                  <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' }}>
-                    {user?.username?.charAt(0).toUpperCase() || 'L'}
-                  </Text>
+                  <Feather
+                    name="user"
+                    size={32}
+                    color="#FFFFFF"
+                  />
                 </View>
               </View>
 
