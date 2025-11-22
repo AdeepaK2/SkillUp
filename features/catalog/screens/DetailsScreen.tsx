@@ -192,45 +192,107 @@ export default function DetailsScreen() {
 
       {/* Bottom Bar */}
       <View className="border-t border-gray-200 dark:border-dark-700 px-6 py-4 bg-white dark:bg-dark-800">
-        <View className="flex-row items-center justify-between">
+        {isEnrolled ? (
+          /* Enrolled State - Show Study and Unjoin buttons */
           <View>
-            {item.price > 0 ? (
-              <>
-                <Text className="text-dark-600 dark:text-dark-300 text-sm">Price</Text>
-                <Text className="text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  Rs {item.price}
-                </Text>
-              </>
-            ) : (
-              <Text className="text-3xl font-bold text-success">FREE</Text>
-            )}
+            <TouchableOpacity 
+              activeOpacity={0.8}
+              onPress={() => router.push({
+                pathname: '/course-content',
+                params: { itemData: JSON.stringify(item) },
+              })}
+              style={{
+                backgroundColor: '#17B5A3',
+                paddingHorizontal: 32,
+                paddingVertical: 16,
+                minHeight: 56,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 12,
+              }}
+            >
+              <Feather
+                name="play-circle"
+                size={22}
+                color="#FFFFFF"
+                style={{ marginRight: 8 }}
+              />
+              <Text className="text-white font-bold text-lg">
+                Start Learning
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              activeOpacity={0.8}
+              onPress={handleBookNow}
+              style={{
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                borderColor: '#EF4444',
+                paddingHorizontal: 32,
+                paddingVertical: 14,
+                minHeight: 54,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Feather
+                name="user-minus"
+                size={20}
+                color="#EF4444"
+                style={{ marginRight: 8 }}
+              />
+              <Text style={{ color: '#EF4444', fontWeight: 'bold', fontSize: 18 }}>
+                Unjoin
+              </Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity 
-            activeOpacity={0.8}
-            onPress={handleBookNow}
-            style={{
-              backgroundColor: isEnrolled ? '#EF4444' : '#17B5A3',
-              paddingHorizontal: 32,
-              paddingVertical: 16,
-              minHeight: 56,
-              minWidth: 160,
-              borderRadius: 12,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Feather
-              name={isEnrolled ? 'user-minus' : 'user-plus'}
-              size={20}
-              color="#FFFFFF"
-              style={{ marginRight: 8 }}
-            />
-            <Text className="text-white font-bold text-lg">
-              {isEnrolled ? 'Unjoin' : 'Join Now'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        ) : (
+          /* Not Enrolled - Show Price and Join button */
+          <View className="flex-row items-center justify-between">
+            <View>
+              {item.price > 0 ? (
+                <>
+                  <Text className="text-dark-600 dark:text-dark-300 text-sm">Price</Text>
+                  <Text className="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                    Rs {item.price}
+                  </Text>
+                </>
+              ) : (
+                <Text className="text-3xl font-bold text-success">FREE</Text>
+              )}
+            </View>
+            <TouchableOpacity 
+              activeOpacity={0.8}
+              onPress={handleBookNow}
+              style={{
+                backgroundColor: '#17B5A3',
+                paddingHorizontal: 32,
+                paddingVertical: 16,
+                minHeight: 56,
+                minWidth: 160,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Feather
+                name="user-plus"
+                size={20}
+                color="#FFFFFF"
+                style={{ marginRight: 8 }}
+              />
+              <Text className="text-white font-bold text-lg">
+                Join Now
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

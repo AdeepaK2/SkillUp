@@ -78,7 +78,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
         {!imageError ? (
           <>
             <Image
-              source={{ uri: item.thumbnail }}
+              source={{ uri: item.thumbnail, cache: 'force-cache' }}
               className="w-full h-full"
               resizeMode="cover"
               onLoadStart={() => setImageLoading(true)}

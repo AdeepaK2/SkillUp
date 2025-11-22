@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
+import AnimatedSplashScreen from '../components/AnimatedSplashScreen';
 import '../global.css';
 import { store } from '../store';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -18,6 +19,7 @@ SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const [isReady, setIsReady] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const theme = useAppSelector((state) => state.theme.mode);
@@ -58,14 +60,11 @@ function RootLayoutNav() {
           const enrollments = JSON.parse(enrollmentsStr);
           dispatch(setEnrollments(enrollments));
         }
-
-        // Add a minimum delay to show splash screen
-        await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.error('Failed to restore state:', error);
       } finally {
         setIsReady(true);
-        // Hide splash screen after state is restored
+        // Hide the native splash screen
         await SplashScreen.hideAsync();
       }
     };
@@ -85,8 +84,13 @@ function RootLayoutNav() {
     }
   }, [isAuthenticated, segments, isReady, router]);
 
-  if (!isReady) {
-    return null; // Return null while splash screen is showing
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+  };
+
+  // Show animated splash screen
+  if (showSplash || !isReady) {
+    return <AnimatedSplashScreen onFinish={handleSplashFinish} />;
   }
 
   return (
@@ -95,6 +99,8 @@ function RootLayoutNav() {
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="details" options={{ headerShown: false }} />
+        <Stack.Screen name="course-content" options={{ headerShown: false }} />
+        <Stack.Screen name="notifications" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
     </>

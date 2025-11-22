@@ -1,4 +1,5 @@
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -8,6 +9,7 @@ import { logout } from '../../../store/slices/authSlice';
 import { toggleTheme } from '../../../store/slices/themeSlice';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const theme = useAppSelector((state) => state.theme.mode);
@@ -159,7 +161,10 @@ export default function ProfileScreen() {
             <Feather name="chevron-right" size={20} color={theme === 'dark' ? '#9CA3AF' : '#6B7280'} />
           </TouchableOpacity>
 
-          <TouchableOpacity className="flex-row items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-dark-700">
+          <TouchableOpacity 
+            onPress={() => router.push('/notifications')}
+            className="flex-row items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-dark-700"
+          >
             <View className="flex-row items-center">
               <View className="bg-gray-100 dark:bg-dark-700 p-2 rounded-lg mr-4">
                 <Feather name="bell" size={24} color={theme === 'dark' ? '#9CA3AF' : '#6B7280'} />
