@@ -35,9 +35,9 @@ export default function DetailsScreen() {
   const getBadgeColor = () => {
     switch (item.type) {
       case 'course':
-        return 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-700';
+        return 'bg-primary-100 dark:bg-primary-900 border-primary-300 dark:border-primary-700';
       case 'workshop':
-        return 'bg-purple-100 dark:bg-purple-900 border-purple-300 dark:border-purple-700';
+        return 'bg-secondary-100 dark:bg-secondary-900 border-secondary-300 dark:border-secondary-700';
       case 'event':
         return 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-700';
     }
@@ -46,9 +46,9 @@ export default function DetailsScreen() {
   const getBadgeTextColor = () => {
     switch (item.type) {
       case 'course':
-        return 'text-blue-800 dark:text-blue-200';
+        return 'text-primary-800 dark:text-primary-200';
       case 'workshop':
-        return 'text-purple-800 dark:text-purple-200';
+        return 'text-secondary-800 dark:text-secondary-200';
       case 'event':
         return 'text-green-800 dark:text-green-200';
     }

@@ -29,7 +29,7 @@ export const COLORS = {
   SUCCESS: '#10B981',
   ERROR: '#EF4444',
   WARNING: '#F59E0B',
-  INFO: '#3B82F6',
+  INFO: '#17B5A3',
   TEAL: '#17B5A3',
 } as const;
 

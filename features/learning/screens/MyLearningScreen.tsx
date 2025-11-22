@@ -80,7 +80,7 @@ export default function MyLearningScreen() {
                   borderRadius: 22,
                   backgroundColor:
                     selectedFilter === filter.id
-                      ? '#3B82F6'
+                      ? '#17B5A3'
                       : theme === 'dark'
                       ? '#374151'
                       : '#F3F4F6',

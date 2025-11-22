@@ -36,9 +36,9 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
   const getBadgeColor = () => {
     switch (item.type) {
       case 'course':
-        return 'bg-blue-100 dark:bg-blue-900';
+        return 'bg-primary-100 dark:bg-primary-900';
       case 'workshop':
-        return 'bg-purple-100 dark:bg-purple-900';
+        return 'bg-secondary-100 dark:bg-secondary-900';
       case 'event':
         return 'bg-green-100 dark:bg-green-900';
     }
@@ -47,9 +47,9 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
   const getBadgeTextColor = () => {
     switch (item.type) {
       case 'course':
-        return 'text-blue-800 dark:text-blue-200';
+        return 'text-primary-800 dark:text-primary-200';
       case 'workshop':
-        return 'text-purple-800 dark:text-purple-200';
+        return 'text-secondary-800 dark:text-secondary-200';
       case 'event':
         return 'text-green-800 dark:text-green-200';
     }
@@ -58,7 +58,21 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="bg-white dark:bg-dark-800 rounded-2xl shadow-md overflow-hidden mb-4 mx-4"
+      activeOpacity={0.9}
+      style={{
+        backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
+        borderRadius: 20,
+        marginHorizontal: 16,
+        marginBottom: 16,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: theme === 'dark' ? 0.3 : 0.1,
+        shadowRadius: 12,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: theme === 'dark' ? '#334155' : '#F1F5F9',
+      }}
     >
       <View className="w-full h-48 bg-gray-100 dark:bg-dark-700">
         {!imageError ? (
@@ -107,24 +121,26 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
       </View>
       
       <TouchableOpacity
-        activeOpacity={0.8}
+        activeOpacity={0.9}
         onPress={handleFavouritePress}
         style={{
           position: 'absolute',
           top: 12,
           right: 12,
-          backgroundColor: isFavourite ? '#17B5A3' : theme === 'dark' ? '#374151' : '#FFFFFF',
+          backgroundColor: isFavourite ? '#17B5A3' : theme === 'dark' ? 'rgba(30, 41, 59, 0.9)' : 'rgba(255, 255, 255, 0.95)',
           paddingHorizontal: 16,
           paddingVertical: 10,
           minHeight: 44,
           borderRadius: 22,
           flexDirection: 'row',
           alignItems: 'center',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
+          shadowColor: isFavourite ? '#17B5A3' : '#000',
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          elevation: 6,
+          borderWidth: 1,
+          borderColor: isFavourite ? '#17B5A3' : theme === 'dark' ? '#475569' : '#E2E8F0',
         }}
       >
         <Feather

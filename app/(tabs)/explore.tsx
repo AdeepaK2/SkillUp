@@ -71,7 +71,7 @@ export default function ExploreScreen() {
         edges={['top']}
         className="flex-1 bg-gray-50 dark:bg-dark-900 justify-center items-center"
       >
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color="#17B5A3" />
       </SafeAreaView>
     );
   }
@@ -105,7 +105,7 @@ export default function ExploreScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={handleRefresh}
-              tintColor="#3B82F6"
+              tintColor="#17B5A3"
             />
           }
           ListEmptyComponent={

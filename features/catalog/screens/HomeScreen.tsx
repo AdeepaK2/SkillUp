@@ -223,21 +223,31 @@ export default function HomeScreen() {
             }}
           >
             <View className="flex-row items-center">
-              {/* User Avatar */}
+              {/* User Avatar with gradient border */}
               <View 
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
-                  backgroundColor: '#17B5A3',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  width: 64,
+                  height: 64,
+                  borderRadius: 32,
+                  background: 'linear-gradient(135deg, #17B5A3, #0B3D5C)',
+                  padding: 3,
                   marginRight: 16,
                 }}
               >
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' }}>
-                  {user?.username?.charAt(0).toUpperCase() || 'L'}
-                </Text>
+                <View 
+                  style={{
+                    width: 58,
+                    height: 58,
+                    borderRadius: 29,
+                    backgroundColor: '#17B5A3',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' }}>
+                    {user?.username?.charAt(0).toUpperCase() || 'L'}
+                  </Text>
+                </View>
               </View>
 
               {/* Welcome Text */}
@@ -289,31 +299,38 @@ export default function HomeScreen() {
             {stats.map((stat, index) => (
               <TouchableOpacity
                 key={index}
-                activeOpacity={0.7}
+                activeOpacity={0.8}
                 style={{
                   flex: 1,
-                  minHeight: 110,
-                  padding: 16,
-                  borderRadius: 16,
+                  minHeight: 115,
+                  padding: 18,
+                  borderRadius: 20,
                   backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 8,
-                  elevation: 3,
+                  shadowColor: stat.color,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 12,
+                  elevation: 5,
+                  borderWidth: 1,
+                  borderColor: theme === 'dark' ? '#334155' : '#F1F5F9',
                 }}
               >
                 <View
                   style={{
-                    width: 48,
-                    height: 48,
-                    backgroundColor: stat.color + '20',
-                    borderRadius: 24,
+                    width: 52,
+                    height: 52,
+                    backgroundColor: stat.bgColor,
+                    borderRadius: 26,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: 8,
+                    marginBottom: 10,
+                    shadowColor: stat.color,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 3,
                   }}
                 >
                   <Feather name={stat.icon as any} size={22} color={stat.color} />
