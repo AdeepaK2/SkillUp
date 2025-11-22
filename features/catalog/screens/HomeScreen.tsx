@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../../../components/LoadingSpinner';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchItemsFailure, fetchItemsStart, fetchItemsSuccess } from '../../../store/slices/catalogSlice';
+import { toggleTheme } from '../../../store/slices/themeSlice';
 import { EducationalItem } from '../../../types';
 
 export default function HomeScreen() {
@@ -140,21 +141,42 @@ export default function HomeScreen() {
       >
         {/* SkillUp Header Logo */}
         <View className="px-5 pt-4 pb-2">
-          <View className="flex-row items-center justify-center">
-            <Image
-              source={require('../../../assets/images/appIcon.png')}
-              style={{ width: 40, height: 40, marginRight: 8 }}
-              resizeMode="contain"
-            />
-            <Text
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center">
+              <Image
+                source={require('../../../assets/images/appIcon.png')}
+                style={{ width: 40, height: 40, marginRight: 8 }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontSize: 28,
+                  fontWeight: 'bold',
+                  color: theme === 'dark' ? '#FFFFFF' : '#0B3D5C',
+                }}
+              >
+                Skill<Text style={{ color: '#17B5A3' }}>Up</Text>
+              </Text>
+            </View>
+            
+            {/* Dark Mode Toggle */}
+            <TouchableOpacity
+              onPress={() => dispatch(toggleTheme())}
               style={{
-                fontSize: 28,
-                fontWeight: 'bold',
-                color: '#0B3D5C',
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: theme === 'dark' ? '#1E293B' : '#F1F5F9',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
-              Skill<Text style={{ color: '#17B5A3' }}>Up</Text>
-            </Text>
+              <Feather
+                name={theme === 'dark' ? 'sun' : 'moon'}
+                size={20}
+                color={theme === 'dark' ? '#17B5A3' : '#0B3D5C'}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 

@@ -198,7 +198,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
             activeOpacity={0.8}
             onPress={handleEnrollmentPress}
             style={{
-              backgroundColor: isEnrolled ? '#10B981' : '#17B5A3',
+              backgroundColor: isEnrolled ? '#EF4444' : '#17B5A3',
               paddingHorizontal: 20,
               paddingVertical: 14,
               minHeight: 48,
@@ -210,7 +210,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
             }}
           >
             <Feather
-              name={isEnrolled ? 'check-circle' : 'plus-circle'}
+              name={isEnrolled ? 'user-minus' : 'user-plus'}
               size={18}
               color="#FFFFFF"
             />
@@ -222,7 +222,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
                 color: '#FFFFFF',
               }}
             >
-              {isEnrolled ? 'Enrolled' : 'Enroll Now'}
+              {isEnrolled ? 'Unjoin' : 'Join Now'}
             </Text>
           </TouchableOpacity>
         )}

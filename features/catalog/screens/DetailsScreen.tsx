@@ -209,7 +209,7 @@ export default function DetailsScreen() {
             activeOpacity={0.8}
             onPress={handleBookNow}
             style={{
-              backgroundColor: isEnrolled ? '#10B981' : '#17B5A3',
+              backgroundColor: isEnrolled ? '#EF4444' : '#17B5A3',
               paddingHorizontal: 32,
               paddingVertical: 16,
               minHeight: 56,
@@ -221,13 +221,13 @@ export default function DetailsScreen() {
             }}
           >
             <Feather
-              name={isEnrolled ? 'check-circle' : 'book-open'}
+              name={isEnrolled ? 'user-minus' : 'user-plus'}
               size={20}
               color="#FFFFFF"
               style={{ marginRight: 8 }}
             />
             <Text className="text-white font-bold text-lg">
-              {isEnrolled ? 'Enrolled' : 'Book Now'}
+              {isEnrolled ? 'Unjoin' : 'Join Now'}
             </Text>
           </TouchableOpacity>
         </View>
