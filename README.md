@@ -460,58 +460,6 @@ GET https://openlibrary.org/subjects/{subject}.json?limit=5
 
 ---
 
-## 🎯 Assignment Requirements Checklist
-
-### ✅ Core Requirements (95/95)
-- [x] User Authentication (15/15)
-  - [x] Registration and login flow
-  - [x] Form validation with Yup
-  - [x] Username displayed in app
-  - [x] AsyncStorage persistence
-- [x] Navigation Structure (10/10)
-  - [x] Expo Router (file-based)
-  - [x] Bottom tab navigation
-  - [x] Stack navigation
-  - [x] Protected routes
-- [x] Home Screen (15/15)
-  - [x] Real API integration (Open Library)
-  - [x] Card layout with image, title, description
-  - [x] Dynamic item list
-- [x] State Management (15/15)
-  - [x] Redux Toolkit
-  - [x] 5 Redux slices
-  - [x] Typed hooks
-  - [x] AsyncStorage persistence
-- [x] Favourites (15/15)
-  - [x] Toggle favourites
-  - [x] Dedicated favourites screen
-  - [x] Persistent storage
-- [x] Styling & UI (15/15)
-  - [x] Consistent design
-  - [x] Feather Icons exclusively
-  - [x] Responsive design
-  - [x] Touch target standards
-- [x] Code Quality (20/20)
-  - [x] Modular architecture
-  - [x] TypeScript
-  - [x] Reusable utilities
-  - [x] Best practices
-
-### ✅ Bonus Features (5/5)
-- [x] Dark mode toggle (5/5)
-  - [x] Theme persistence
-  - [x] System-wide support
-  - [x] Animated toggle
-
-### 📹 Deliverables
-- [x] GitHub repository
-- [ ] Screenshots (prepare both light/dark mode)
-- [ ] Demo video ≤2 minutes
-
-**Total Score: 95/95 + Demo (5) = Expected 100/100**
-
----
-
 ## 🔮 Future Enhancements
 
 - [ ] Backend API integration
@@ -529,16 +477,7 @@ GET https://openlibrary.org/subjects/{subject}.json?limit=5
 
 ## 📄 License
 
-This project was created for educational purposes as part of the IN3210 Mobile Applications Development course at the University of Moratuwa.
-
----
-
-## 👨‍💻 Author
-
-**Adeepa K**  
-Student - University of Moratuwa  
-Course: IN3210 Mobile Applications Development  
-Assignment: Cross-Platform Mobile Development with React Native
+MIT License - Open source and free to use.
 
 ---
 

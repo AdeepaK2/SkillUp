@@ -4,30 +4,30 @@
     "slug": "SkillUp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/appIcon.png",
     "scheme": "skillup",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/icon.png",
+      "image": "./assets/images/appIcon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
       "splash": {
-        "image": "./assets/images/icon.png",
+        "image": "./assets/images/appIcon.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#17B5A3",
-        "foregroundImage": "./assets/images/icon.png"
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/images/appIcon.png"
       },
       "splash": {
-        "image": "./assets/images/icon.png",
+        "image": "./assets/images/appIcon.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },

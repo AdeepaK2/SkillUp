@@ -12,13 +12,13 @@ const themeSlice = createSlice({
   reducers: {
     setTheme: (state, action: PayloadAction<ThemeMode>) => {
       state.mode = action.payload;
-      // Persist theme
-      AsyncStorage.setItem('theme', action.payload);
+      // Persist theme asynchronously (non-blocking)
+      AsyncStorage.setItem('theme', action.payload).catch(console.error);
     },
     toggleTheme: (state) => {
       state.mode = state.mode === 'light' ? 'dark' : 'light';
-      // Persist theme
-      AsyncStorage.setItem('theme', state.mode);
+      // Persist theme asynchronously (non-blocking)
+      AsyncStorage.setItem('theme', state.mode).catch(console.error);
     },
     restoreTheme: (state, action: PayloadAction<ThemeMode>) => {
       state.mode = action.payload;

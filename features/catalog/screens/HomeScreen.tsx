@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, FlatList, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
@@ -10,6 +10,7 @@ import { LoadingSpinner } from '../../../components/LoadingSpinner';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchItemsFailure, fetchItemsStart, fetchItemsSuccess } from '../../../store/slices/catalogSlice';
+import { toggleTheme } from '../../../store/slices/themeSlice';
 import { EducationalItem } from '../../../types';
 
 export default function HomeScreen() {
@@ -25,8 +26,25 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   
+  // Animation for theme toggle
+  const rotateAnim = React.useRef(new Animated.Value(0)).current;
+  
   // Debounce search query to reduce filtering operations
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  const handleThemeToggle = useCallback(() => {
+    // Animate rotation
+    Animated.timing(rotateAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      rotateAnim.setValue(0);
+    });
+    
+    // Toggle theme immediately
+    dispatch(toggleTheme());
+  }, [dispatch, rotateAnim]);
 
   const loadItems = useCallback(async (forceRefresh = false) => {
     try {
@@ -104,15 +122,15 @@ export default function HomeScreen() {
         icon: 'book-open',
         label: 'Enrolled',
         value: enrolledIds.length,
-        color: '#6366F1',
-        bgColor: theme === 'dark' ? '#312E81' : '#EEF2FF',
+        color: '#17B5A3',
+        bgColor: theme === 'dark' ? '#094941' : '#E6F7F5',
       },
       {
         icon: 'heart',
         label: 'Favourites',
         value: favouriteIds.length,
-        color: '#EC4899',
-        bgColor: theme === 'dark' ? '#831843' : '#FCE7F3',
+        color: '#17B5A3',
+        bgColor: theme === 'dark' ? '#094941' : '#E6F7F5',
       },
       {
         icon: 'award',
@@ -134,12 +152,64 @@ export default function HomeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#17B5A3" />
         }
         contentContainerStyle={{ paddingBottom: 20 }}
       >
+        {/* SkillUp Header Logo */}
+        <View className="px-5 pt-4 pb-2">
+          <View className="flex-row items-center justify-between">
+            <View className="flex-row items-center">
+              <Image
+                source={require('../../../assets/images/appIcon.png')}
+                style={{ width: 40, height: 40, marginRight: 8 }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontSize: 28,
+                  fontWeight: 'bold',
+                  color: theme === 'dark' ? '#FFFFFF' : '#0B3D5C',
+                }}
+              >
+                Skill<Text style={{ color: '#17B5A3' }}>Up</Text>
+              </Text>
+            </View>
+            
+            {/* Dark Mode Toggle */}
+            <TouchableOpacity
+              onPress={handleThemeToggle}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: theme === 'dark' ? '#1E293B' : '#F1F5F9',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Animated.View
+                style={{
+                  transform: [{
+                    rotate: rotateAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ['0deg', '360deg'],
+                    }),
+                  }],
+                }}
+              >
+                <Feather
+                  name={theme === 'dark' ? 'sun' : 'moon'}
+                  size={20}
+                  color={theme === 'dark' ? '#17B5A3' : '#0B3D5C'}
+                />
+              </Animated.View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Welcome Card */}
-        <View className="px-5 pt-4 pb-3">
+        <View className="px-5 pt-2 pb-3">
           <View 
             style={{
               backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
@@ -153,21 +223,33 @@ export default function HomeScreen() {
             }}
           >
             <View className="flex-row items-center">
-              {/* User Avatar */}
+              {/* User Avatar with gradient border */}
               <View 
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
-                  backgroundColor: '#6366F1',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  width: 64,
+                  height: 64,
+                  borderRadius: 32,
+                  background: 'linear-gradient(135deg, #17B5A3, #0B3D5C)',
+                  padding: 3,
                   marginRight: 16,
                 }}
               >
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FFFFFF' }}>
-                  {user?.username?.charAt(0).toUpperCase() || 'L'}
-                </Text>
+                <View 
+                  style={{
+                    width: 58,
+                    height: 58,
+                    borderRadius: 29,
+                    backgroundColor: '#17B5A3',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Feather
+                    name="user"
+                    size={32}
+                    color="#FFFFFF"
+                  />
+                </View>
               </View>
 
               {/* Welcome Text */}
@@ -219,31 +301,38 @@ export default function HomeScreen() {
             {stats.map((stat, index) => (
               <TouchableOpacity
                 key={index}
-                activeOpacity={0.7}
+                activeOpacity={0.8}
                 style={{
                   flex: 1,
-                  minHeight: 110,
-                  padding: 16,
-                  borderRadius: 16,
+                  minHeight: 115,
+                  padding: 18,
+                  borderRadius: 20,
                   backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 8,
-                  elevation: 3,
+                  shadowColor: stat.color,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 12,
+                  elevation: 5,
+                  borderWidth: 1,
+                  borderColor: theme === 'dark' ? '#334155' : '#F1F5F9',
                 }}
               >
                 <View
                   style={{
-                    width: 48,
-                    height: 48,
-                    backgroundColor: stat.color + '20',
-                    borderRadius: 24,
+                    width: 52,
+                    height: 52,
+                    backgroundColor: stat.bgColor,
+                    borderRadius: 26,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: 8,
+                    marginBottom: 10,
+                    shadowColor: stat.color,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: 3,
                   }}
                 >
                   <Feather name={stat.icon as any} size={22} color={stat.color} />
@@ -383,14 +472,14 @@ export default function HomeScreen() {
                     marginRight: 8,
                     backgroundColor:
                       selectedCategory === category
-                        ? '#6366F1'
+                        ? '#17B5A3'
                         : theme === 'dark'
                         ? '#1E293B'
                         : '#F1F5F9',
                     borderWidth: 1,
                     borderColor:
                       selectedCategory === category
-                        ? '#6366F1'
+                        ? '#17B5A3'
                         : theme === 'dark'
                         ? '#334155'
                         : '#E2E8F0',

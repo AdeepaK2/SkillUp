@@ -8,7 +8,7 @@ export default function TabLayout() {
   const theme = useAppSelector((state) => state.theme.mode);
   const insets = useSafeAreaInsets();
 
-  const activeColor = '#6366F1';
+  const activeColor = '#17B5A3';
   const inactiveColor = theme === 'dark' ? '#9CA3AF' : '#6B7280';
 
   return (

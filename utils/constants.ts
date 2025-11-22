@@ -25,12 +25,12 @@ export const DIFFICULTY_LEVELS = {
 } as const;
 
 export const COLORS = {
-  PRIMARY: '#6366F1',
+  PRIMARY: '#17B5A3',
   SUCCESS: '#10B981',
   ERROR: '#EF4444',
   WARNING: '#F59E0B',
-  INFO: '#3B82F6',
-  PINK: '#EC4899',
+  INFO: '#17B5A3',
+  TEAL: '#17B5A3',
 } as const;
 
 export const THEME_COLORS = {
