@@ -119,7 +119,7 @@ export default function ProfileScreen() {
                 <Feather
                   name={theme === 'dark' ? 'moon' : 'sun'}
                   size={24}
-                  color="#6366F1"
+                  color="#17B5A3"
                 />
               </View>
               <View>

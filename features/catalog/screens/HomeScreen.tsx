@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { catalogService } from '../../../api/catalogService';
 import { CourseCard } from '../../../components/CourseCard';
@@ -104,14 +104,14 @@ export default function HomeScreen() {
         icon: 'book-open',
         label: 'Enrolled',
         value: enrolledIds.length,
-        color: '#6366F1',
-        bgColor: theme === 'dark' ? '#312E81' : '#EEF2FF',
+        color: '#17B5A3',
+        bgColor: theme === 'dark' ? '#094941' : '#E6F7F5',
       },
       {
         icon: 'heart',
         label: 'Favourites',
         value: favouriteIds.length,
-        color: '#EC4899',
+        color: '#0B3D5C',
         bgColor: theme === 'dark' ? '#831843' : '#FCE7F3',
       },
       {
@@ -134,12 +134,32 @@ export default function HomeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#17B5A3" />
         }
         contentContainerStyle={{ paddingBottom: 20 }}
       >
+        {/* SkillUp Header Logo */}
+        <View className="px-5 pt-4 pb-2">
+          <View className="flex-row items-center justify-center">
+            <Image
+              source={require('../../../assets/images/appIcon.png')}
+              style={{ width: 40, height: 40, marginRight: 8 }}
+              resizeMode="contain"
+            />
+            <Text
+              style={{
+                fontSize: 28,
+                fontWeight: 'bold',
+                color: '#0B3D5C',
+              }}
+            >
+              Skill<Text style={{ color: '#17B5A3' }}>Up</Text>
+            </Text>
+          </View>
+        </View>
+
         {/* Welcome Card */}
-        <View className="px-5 pt-4 pb-3">
+        <View className="px-5 pt-2 pb-3">
           <View 
             style={{
               backgroundColor: theme === 'dark' ? '#1E293B' : '#FFFFFF',
@@ -159,7 +179,7 @@ export default function HomeScreen() {
                   width: 56,
                   height: 56,
                   borderRadius: 28,
-                  backgroundColor: '#6366F1',
+                  backgroundColor: '#17B5A3',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginRight: 16,
@@ -383,14 +403,14 @@ export default function HomeScreen() {
                     marginRight: 8,
                     backgroundColor:
                       selectedCategory === category
-                        ? '#6366F1'
+                        ? '#17B5A3'
                         : theme === 'dark'
                         ? '#1E293B'
                         : '#F1F5F9',
                     borderWidth: 1,
                     borderColor:
                       selectedCategory === category
-                        ? '#6366F1'
+                        ? '#17B5A3'
                         : theme === 'dark'
                         ? '#334155'
                         : '#E2E8F0',

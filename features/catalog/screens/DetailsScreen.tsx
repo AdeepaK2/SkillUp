@@ -82,8 +82,8 @@ export default function DetailsScreen() {
             <Feather
               name="heart"
               size={24}
-              color={isFavourite ? '#EC4899' : theme === 'dark' ? '#9CA3AF' : '#6B7280'}
-              fill={isFavourite ? '#EC4899' : 'transparent'}
+              color={isFavourite ? '#17B5A3' : theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+              fill={isFavourite ? '#17B5A3' : 'transparent'}
             />
           </TouchableOpacity>
         </View>
@@ -209,7 +209,7 @@ export default function DetailsScreen() {
             activeOpacity={0.8}
             onPress={handleBookNow}
             style={{
-              backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
+              backgroundColor: isEnrolled ? '#10B981' : '#17B5A3',
               paddingHorizontal: 32,
               paddingVertical: 16,
               minHeight: 56,

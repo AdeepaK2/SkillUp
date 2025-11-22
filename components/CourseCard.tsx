@@ -87,7 +87,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
                   backgroundColor: theme === 'dark' ? '#1F2937' : '#F3F4F6',
                 }}
               >
-                <ActivityIndicator size="small" color="#6366F1" />
+                <ActivityIndicator size="small" color="#17B5A3" />
               </View>
             )}
           </>
@@ -113,7 +113,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
           position: 'absolute',
           top: 12,
           right: 12,
-          backgroundColor: isFavourite ? '#EC4899' : theme === 'dark' ? '#374151' : '#FFFFFF',
+          backgroundColor: isFavourite ? '#17B5A3' : theme === 'dark' ? '#374151' : '#FFFFFF',
           paddingHorizontal: 16,
           paddingVertical: 10,
           minHeight: 44,
@@ -198,7 +198,7 @@ export const CourseCard: React.FC<CourseCardProps> = React.memo(({ item, onPress
             activeOpacity={0.8}
             onPress={handleEnrollmentPress}
             style={{
-              backgroundColor: isEnrolled ? '#10B981' : '#6366F1',
+              backgroundColor: isEnrolled ? '#10B981' : '#17B5A3',
               paddingHorizontal: 20,
               paddingVertical: 14,
               minHeight: 48,
